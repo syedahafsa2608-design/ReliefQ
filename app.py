@@ -6,6 +6,36 @@ from collections import defaultdict
 
 import pandas as pd
 import streamlit as st
+st.markdown("""
+<style>
+/* Make contact name and contact person text black */
+input,
+textarea,
+select,
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] *,
+.stMultiSelect div[data-baseweb="select"] * {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+
+/* Make input placeholders readable */
+input::placeholder,
+textarea::placeholder {
+    color: #555555 !important;
+    -webkit-text-fill-color: #555555 !important;
+}
+
+/* Make form labels black */
+.stTextInput label,
+.stTextArea label,
+.stSelectbox label,
+.stNumberInput label {
+    color: #000000 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # QAOA is kept separate from the classical greedy baseline.
 try:
@@ -412,3 +442,54 @@ elif page == "Demo Data Tools":
         st.session_state.pop("greedy_result", None)
         st.success("Demo data has been reset.")
         st.rerun()
+import folium
+import streamlit as st
+from streamlit_folium import st_folium
+
+st.subheader("🗺️ ReliefQ — Relief Center Map")
+st.caption("Explore relief locations and resource needs.")
+
+# Example locations: replace with your real center coordinates
+relief_centers = [
+    {
+        "name": "Demo Relief Center A",
+        "lat": 12.9716,
+        "lon": 77.5946,
+        "contact": "Relief Coordinator",
+        "resources": "Drinking water, food",
+    },
+    {
+        "name": "Demo Relief Center B",
+        "lat": 12.9352,
+        "lon": 77.6245,
+        "contact": "Field Coordinator",
+        "resources": "Blankets, medicines",
+    },
+]
+
+m = folium.Map(
+    location=[12.9716, 77.5946],
+    zoom_start=11,
+    tiles="OpenStreetMap",
+)
+
+for center in relief_centers:
+    popup_html = f"""
+    <b>{center['name']}</b><br>
+    Contact: {center['contact']}<br>
+    Needs: {center['resources']}
+    """
+
+    folium.Marker(
+        location=[center["lat"], center["lon"]],
+        tooltip=center["name"],
+        popup=folium.Popup(popup_html, max_width=250),
+        icon=folium.Icon(color="blue", icon="info-sign"),
+    ).add_to(m)
+
+st_folium(
+    m,
+    use_container_width=True,
+    height=480,
+    returned_objects=[],
+)        

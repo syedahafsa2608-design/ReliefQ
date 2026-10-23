@@ -6,3 +6,5 @@ qiskit-optimization
 qiskit-aer
 qiskit-algorithms
 supabase
+folium
+streamlit-folium
